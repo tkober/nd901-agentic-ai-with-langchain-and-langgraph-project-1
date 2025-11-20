@@ -12,13 +12,15 @@ class DocumentChunk(BaseModel):
     relevance_score: float = Field(default=0.0, description="Relevance score for retrieval")
 
 
-# TODO: Implement the AnswerResponse schema for structured Q&A responses.
 # This schema should include fields for the question, answer, sources, confidence, and timestamp.
 # Refer to README.md Task 1.1 for detailed field requirements.
 class AnswerResponse(BaseModel):
     """Structured response for Q&A tasks - TO BE IMPLEMENTED"""
-    pass
-
+    question: str = Field(description="The original user question")
+    answer: str = Field(description="The generated answer")
+    sources: List[str] = Field(description="List of source document IDs used")
+    confidence: float = Field(description="Confidence score between 0 and 1")
+    timestamp: datetime = Field(description="When the response was generated")
 
 
 class SummarizationResponse(BaseModel):
