@@ -212,7 +212,7 @@ def calculation_agent(state: AgentState, config: RunnableConfig) -> AgentState:
     }
 
 
-# TODO: Finish implementing the update_memory function. Refer to README.md Task 2.4
+# Finish implementing the update_memory function. Refer to README.md Task 2.4
 def update_memory(state: AgentState, config: RunnableConfig) -> AgentState:
     """
     Update conversation memory and record the action.
