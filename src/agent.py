@@ -66,8 +66,8 @@ class AgentState(TypedDict, total=False):
     session_id: Optional[str]
     user_id: Optional[str]
 
-    # TODO: Modify actions_taken to use an operator.add reducer
-    actions_taken: Annotated[List[str]]
+    # Modify actions_taken to use an operator.add reducer
+    actions_taken: Annotated[List[str], operator.add]
 
 
 def invoke_react_agent(
