@@ -125,7 +125,7 @@ def classify_intent(state: AgentState, config: RunnableConfig) -> AgentState:
 
     return AgentState(
         actions_taken=["classify_intent"],
-        intent=result.intent_type,
+        intent=result,
         next_step=next_step,
     )
 

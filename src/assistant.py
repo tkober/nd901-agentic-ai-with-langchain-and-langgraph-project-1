@@ -1,5 +1,6 @@
 import os
 import json
+import traceback
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 import uuid
@@ -32,7 +33,7 @@ class DocumentAssistant:
             api_key=openai_api_key,
             model=model_name,
             temperature=temperature,
-            base_url="https://openai.vocareum.com/v1",
+            # base_url="https://openai.vocareum.com/v1",
         )
 
         # Initialize components
@@ -170,4 +171,5 @@ class DocumentAssistant:
                 "summary": final_state.get("conversation_summary", []),
             }
         except Exception as e:
+            traceback.print_exc()
             return {"success": False, "error": str(e), "response": None}
