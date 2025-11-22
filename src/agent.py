@@ -5,7 +5,8 @@ from langchain_core.runnables import RunnableConfig
 from pydantic import BaseModel
 from langgraph.graph import StateGraph, END
 from langgraph.graph.message import add_messages
-from langgraph.prebuilt import create_react_agent, tools_condition, ToolNode
+from langchain.agents import create_agent
+from langgraph.prebuilt import tools_condition, ToolNode
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage, ToolMessage
 import re
 import operator
@@ -16,7 +17,7 @@ from schemas import (
 from prompts import get_intent_classification_prompt, get_chat_prompt_template, MEMORY_SUMMARY_PROMPT
 
 
-# TODO: The AgentState class is already implemented for you.  Study the
+# The AgentState class is already implemented for you.  Study the
 # structure to understand how state flows through the LangGraph
 # workflow.  See README.md Task 2.1 for detailed explanations of
 # each property.
@@ -48,13 +49,11 @@ class AgentState(TypedDict):
     actions_taken: Annotated[List[str]]
 
 
-def invoke_react_agent(response_schema: type[BaseModel], messages: List[BaseMessage], llm, tools) -> (
-Dict[str, Any], List[str]):
+def invoke_react_agent(response_schema: type[BaseModel], messages: List[BaseMessage], llm, tools) -> tuple[Dict[str, Any], List[str]]:
     llm_with_tools = llm.bind_tools(
         tools
     )
-
-    agent = create_react_agent(
+    agent = create_agent(
         model=llm_with_tools,  # Use the bound model
         tools=tools,
         response_format=response_schema,
