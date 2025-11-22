@@ -8,6 +8,7 @@ from langgraph.graph.message import add_messages
 from langchain.agents import create_agent
 from langgraph.prebuilt import tools_condition, ToolNode
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage, ToolMessage
+from langchain_openai import ChatOpenAI
 import re
 import operator
 from schemas import (
@@ -21,7 +22,7 @@ from prompts import get_intent_classification_prompt, get_chat_prompt_template, 
 # structure to understand how state flows through the LangGraph
 # workflow.  See README.md Task 2.1 for detailed explanations of
 # each property.
-class AgentState(TypedDict):
+class AgentState(TypedDict, total=False):
     """
     The agent state object
     """
@@ -65,7 +66,7 @@ def invoke_react_agent(response_schema: type[BaseModel], messages: List[BaseMess
     return result, tools_used
 
 
-# TODO: Implement the classify_intent function.
+# Implement the classify_intent function.
 # This function should classify the user's intent and set the next step in the workflow.
 # Refer to README.md Task 2.2
 def classify_intent(state: AgentState, config: RunnableConfig) -> AgentState:
@@ -74,21 +75,38 @@ def classify_intent(state: AgentState, config: RunnableConfig) -> AgentState:
     function executed by appending "classify_intent" to actions_taken.
     """
 
-    llm = config.get("configurable").get("llm")
+    configurable = config.get("configurable")
+    if not isinstance(configurable, dict):
+        raise TypeError("Expected 'configurable' to be a dictionary.")
+    llm = configurable.get("llm")
+    if not isinstance(llm, ChatOpenAI):
+        raise TypeError("Expected 'llm' to be of type ChatOpenAI.")
     history = state.get("messages", [])
 
-    # TODO Configure the llm chat model for structured output
+    # Configure the llm chat model for structured output
+    structured_output_llm = llm.with_structured_output(UserIntent)
 
-    # TODO Create a formatted prompt with conversation history and user input
+    # Create a formatted prompt with conversation history and user input
+    prompt = get_intent_classification_prompt().format(
+        user_input=state["user_input"], 
+        conversation_history=history
+        )
+    
+    result: UserIntent = structured_output_llm.invoke(prompt)
 
-    next_step = "qa"
+    # Add conditional logic to set next_step based on intent
+    next_step = {
+        "qa": "qa_agent", 
+        "summarization":  "summarization_agent", 
+        "calculation":  "calculation_agent", 
+        "unknown": "qa_agent"
+    }[result.intent_type]
 
-    # TODO: Add conditional logic to set next_step based on intent
-
-    return {
-        "actions_taken": ["classify_intent"],
-        # TODO: Update state intent and next_step
-    }
+    return AgentState(
+        actions_taken=["classify_intent"],
+        intent=result.intent_type,
+        next_step=next_step,
+    )
 
 
 def qa_agent(state: AgentState, config: RunnableConfig) -> AgentState:

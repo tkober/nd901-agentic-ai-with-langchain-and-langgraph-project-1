@@ -1,5 +1,12 @@
-from langchain_core.prompts import PromptTemplate, ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.prompts.chat import SystemMessagePromptTemplate, HumanMessagePromptTemplate
+from langchain_core.prompts import (
+    PromptTemplate,
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+)
+from langchain_core.prompts.chat import (
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
 
 
 def get_intent_classification_prompt() -> PromptTemplate:
@@ -22,7 +29,7 @@ Recent Conversation History:
 {conversation_history}
 
 Analyze the user's request and classify their intent with a confidence score and brief reasoning.
-"""
+""",
     )
 
 
@@ -71,20 +78,21 @@ def get_chat_prompt_template(intent_type: str) -> ChatPromptTemplate:
     """
     Get the appropriate chat prompt template based on intent.
     """
-    if intent_type == "qa":
-        system_prompt = QA_SYSTEM_PROMPT
-    elif intent_type ==  # TODO:  Check the intent type value
-        system_prompt =  # TODO: Set system prompt to the correct value based on intent type
-    elif intent_type ==  # TODO: Check the intent type value
-    # TODO: Set system prompt to the correct value based on intent type
-    else:
-        system_prompt = QA_SYSTEM_PROMPT  # Default fallback
+    pass
+    # if intent_type == "qa":
+    #     system_prompt = QA_SYSTEM_PROMPT
+    # elif intent_type ==  # TODO:  Check the intent type value
+    #     system_prompt =  # TODO: Set system prompt to the correct value based on intent type
+    # elif intent_type ==  # TODO: Check the intent type value
+    # # TODO: Set system prompt to the correct value based on intent type
+    # else:
+    #     system_prompt = QA_SYSTEM_PROMPT  # Default fallback
 
-    return ChatPromptTemplate.from_messages([
-        SystemMessagePromptTemplate.from_template(system_prompt),
-        MessagesPlaceholder("chat_history"),
-        HumanMessagePromptTemplate.from_template("{input}")
-    ])
+    # return ChatPromptTemplate.from_messages([
+    #     SystemMessagePromptTemplate.from_template(system_prompt),
+    #     MessagesPlaceholder("chat_history"),
+    #     HumanMessagePromptTemplate.from_template("{input}")
+    # ])
 
 
 # Memory Summary Prompt
