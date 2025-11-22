@@ -68,8 +68,18 @@ Guidelines:
 """
 
 # Calculation System Prompt
-# TODO: Implement the CALCULATION_SYSTEM_PROMPT. Refer to README.md Task 3.2 for details
-CALCULATION_SYSTEM_PROMPT = """"""
+# Implement the CALCULATION_SYSTEM_PROMPT. Refer to README.md Task 3.2 for details
+CALCULATION_SYSTEM_PROMPT = """You are a 
+
+Your approach:
+- Determine the document that must be retrieved and retrieve it using the document reader tool
+- Determine the mathematical expression to calculate based on the user's input
+- Use the calculator tool to perform the calculation
+
+Guidelines:
+1. Always use the the calculator tool no matter how simple the calculation is
+
+"""
 
 
 # Finish the function to return the correct prompt based on intent type
