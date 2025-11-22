@@ -262,9 +262,11 @@ def create_workflow(llm, tools):
     workflow = StateGraph(AgentState)
 
     # Add all the nodes to the workflow by calling workflow.add_node(...)
+    workflow.add_node("classify_intent", classify_intent)
     workflow.add_node("qa_agent", qa_agent)
     workflow.add_node("summarization_agent", summarization_agent)
     workflow.add_node("calculation_agent", calculation_agent)
+    workflow.add_node("update_memory", update_memory)
 
     workflow.set_entry_point("classify_intent")
     workflow.add_conditional_edges(
