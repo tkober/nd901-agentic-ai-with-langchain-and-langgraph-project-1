@@ -1,6 +1,25 @@
-# nd901-agentic-ai-with-langchain-and-langgraph-project-1
+#### ND901 - Agentic AI Engineer with LangChain and LangGraph
 
-## Test Run
+# Project 1: Report Building Agent
+
+
+## Prerequisites
+
+This project is set up on top of the python tooling of [Astral.sh](https://astral.sh/), escpecially their package manager `uv`. If you have it already installed you can set up this project and install all dependencies by running the following command inside the root folder.
+
+```
+uv sync
+``` 
+
+## Running the Agent
+
+After synchronizing your [pyproject.toml](pyproject.toml) as shown above you can run the agent on your terminal from the project root by simply running the [main.py](main.py)
+
+```
+python main.py
+``` 
+
+## Example Run
 
 
 ![](doc/conversation.png)
@@ -55,3 +74,13 @@
   }
 ]
 ```
+
+## Architecture
+
+![alt text](doc/langgraph_agent_architecture.png)
+
+## Memory
+
+
+
+## Design Decisions
