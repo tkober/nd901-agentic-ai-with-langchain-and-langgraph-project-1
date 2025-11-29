@@ -77,10 +77,48 @@ python main.py
 
 ## Architecture
 
+Even through there is some branching in the designed workflow it is still pretty linear with three subsequent stages as shown in the graph below.
+These stages are **Intent Classification**, **Intent Fulfillment** and **Memorization**.
+
 ![alt text](doc/langgraph_agent_architecture.png)
 
-## Memory
+### Intent Classification
+On the first stage a [classify_intent](src/agent.py#L94) agent leverages a LLM (here GPT4o from OpenAI) to map the users natural language request into one of these [predefined classes](src/schemas.py#L72):
+```
+["qa", "summarization", "calculation", "unknown"] 
+```
 
+### Intent Fulfillment
+
+After classifying the users intention the corresponding agent will be invoked. 
+Each of these agents provides predefined LLM prompts to guide the intention and hooks the LLM up with two tools.
+One for retrieving the documents to report on and another one for solving simple mathematical expressions (with guaranteed correctnes compared to letting the LLM solve these on its own).
+
+See the graph above for routing based on intent class. The class `unkown` will also be routet the same as `qa`.
+
+### Memorization
+
+The last stage is updating the agents memory in [update_memory](src/agent.py#L217).
+
+Here the LLM is called (by using a prompt template) to summarize the entire conversation so far. This summary will be stored alongside the referenced documents IDs and the invoked tools (although these are appended to the state already upon invocation).
+
+For memorizing the `InMemorySaver` is being used which allows ephemeral memory for individual users. This is done by asking the user for a user ID upon startup.
 
 
 ## Design Decisions
+
+### Schemas for Structured Output
+
+All invocations are forcing the LLM to return structured output by providing a predefined schema.
+
+### Pydandic vs TypedDict
+
+Pydantic is being used over the more simple TypedDicts for schemas as these provide evaluation and constraints.
+
+### User ID as Thread ID
+
+The User ID is being used as *threadId* for the `InMemorySaver` in order to allow conversation memory for multiple users at once.
+
+### Prompt Guidelines
+
+Each agent prompt contains a section of strict guidelines the LLM should follow. This is especially important for guaranteeing tool invocation where the LLM might otherwise would try to solve a task on its own.
